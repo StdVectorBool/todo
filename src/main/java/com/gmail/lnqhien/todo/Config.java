@@ -9,5 +9,6 @@ import com.gmail.lnqhien.todo.api.resource.Todo;
 public class Config extends ResourceConfig {
 	public Config() {
 		register(Todo.class);
+		register(JsonExceptionMapper.class);
 	}
 }
