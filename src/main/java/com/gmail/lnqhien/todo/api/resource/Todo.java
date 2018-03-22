@@ -6,6 +6,7 @@ import java.util.stream.StreamSupport;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
@@ -13,9 +14,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import com.gmail.lnqhien.todo.ItemRepository;
@@ -62,9 +65,19 @@ public class Todo {
 	}
 	
 	@GET
-	public List<Item> getMany() {
-		Iterable<Item> items = repository.findAll();
+	public List<Item> getMany(
+		@QueryParam("page") @DefaultValue("0") int page,
+		@QueryParam("size") @DefaultValue("5") int size
+	) {
+		size = Math.min(size, 10); // restrict max in case lots of data
+		Iterable<Item> items = repository.findAll(PageRequest.of(page, size));
 		return StreamSupport.stream(items.spliterator(), false)
 			.collect(Collectors.toList());
+	}
+	
+	@GET
+	@Path("/count")
+	public long getCount() {
+		return repository.count();
 	}
 }
