@@ -1,7 +1,8 @@
 package com.gmail.lnqhien.todo.api.resource;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -13,9 +14,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.gmail.lnqhien.todo.api.entity.TodoItem;
+import com.gmail.lnqhien.todo.ItemRepository;
+import com.gmail.lnqhien.todo.entity.Item;
 
 @Component
 @Path("/todo")
@@ -23,35 +26,39 @@ import com.gmail.lnqhien.todo.api.entity.TodoItem;
 @Consumes(MediaType.APPLICATION_JSON)
 public class Todo {
 	
+	@Autowired
+	private ItemRepository repository;
+	
 	@POST
-	public TodoItem add(TodoItem item) {
-		item.setId(1);
-		return item;
+	public Item add(Item item) {
+		return repository.save(item);
 	}
 	
 	@GET
 	@Path("/{id}")
-	public TodoItem get(@PathParam("id") long id) {
-		return new TodoItem(id, false, "todo 1");
+	public Item get(@PathParam("id") long id) {
+		return repository.findById(id).get();
 	}
 	
 	@DELETE
 	@Path("/{id}")
 	public void delete(@PathParam("id") long id) {
+		repository.deleteById(id);
 	}
 	
 	@PUT
 	@Path("/{id}")
-	public TodoItem update(@PathParam("id") long id, TodoItem item) {
-		item.setId(id);
-		return item;
+	public Item update(@PathParam("id") long id, Item item) {
+		Item currentItem = repository.findById(id).get();
+		currentItem.setText(item.getText());
+		currentItem.setDone(item.isDone());
+		return repository.save(currentItem);
 	}
 	
 	@GET
-	public List<TodoItem> getMany() {
-		return Arrays.asList(
-			new TodoItem(1, false, "todo 1"),
-			new TodoItem(2, false, "todo 2")
-		);
+	public List<Item> getMany() {
+		Iterable<Item> items = repository.findAll();
+		return StreamSupport.stream(items.spliterator(), false)
+			.collect(Collectors.toList());
 	}
 }

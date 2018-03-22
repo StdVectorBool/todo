@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import com.gmail.lnqhien.todo.api.resource.Todo;
 
 @Component
-public class TodoConfig extends ResourceConfig {
-	public TodoConfig() {
+public class Config extends ResourceConfig {
+	public Config() {
 		register(Todo.class);
 	}
 }
