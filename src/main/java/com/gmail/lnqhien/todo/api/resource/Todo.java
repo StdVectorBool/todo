@@ -32,7 +32,7 @@ public class Todo {
 	
 	@POST
 	public Item add(Item item) {
-		return repository.save(item);
+		return repository.save(new Item(item.isDone(), item.getText()));
 	}
 	
 	@GET

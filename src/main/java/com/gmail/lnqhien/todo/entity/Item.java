@@ -17,8 +17,7 @@ public class Item {
 	public Item() {
 	}
 	
-	public Item(Long id, boolean done, String text) {
-		this.id = id;
+	public Item(boolean done, String text) {
 		this.done = done;
 		this.text = text;
 	}
