@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -37,22 +38,27 @@ public class Todo {
 	@GET
 	@Path("/{id}")
 	public Item get(@PathParam("id") long id) {
-		return repository.findById(id).get();
+		return repository.findById(id)
+			.orElseThrow(() -> new NotFoundException());
 	}
 	
 	@DELETE
 	@Path("/{id}")
 	public void delete(@PathParam("id") long id) {
-		repository.deleteById(id);
+		Item item = repository.findById(id)
+			.orElseThrow(() -> new NotFoundException());
+		repository.delete(item);
 	}
 	
 	@PUT
 	@Path("/{id}")
-	public Item update(@PathParam("id") long id, Item item) {
-		Item currentItem = repository.findById(id).get();
-		currentItem.setText(item.getText());
-		currentItem.setDone(item.isDone());
-		return repository.save(currentItem);
+	public Item update(@PathParam("id") long id, Item newItem) {
+		Item item = repository.findById(id)
+			.orElseThrow(() -> new NotFoundException());
+		
+		item.setText(newItem.getText());
+		item.setDone(newItem.isDone());
+		return repository.save(item);
 	}
 	
 	@GET
