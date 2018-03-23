@@ -36,11 +36,17 @@ public class Todo {
 	@Autowired
 	private ItemRepository repository;
 	
+	/**
+	 * Add a new To-Do item
+	 */
 	@POST
 	public Item add(Item item) {
 		return repository.save(new Item(item.isDone(), item.getText()));
 	}
 	
+	/**
+	 * Get a single To-Do item
+	 */
 	@GET
 	@Path("/{id}")
 	public Item get(@PathParam("id") long id) {
@@ -48,6 +54,9 @@ public class Todo {
 			.orElseThrow(() -> new NotFoundException());
 	}
 	
+	/**
+	 * Delete a single To-Do item
+	 */
 	@DELETE
 	@Path("/{id}")
 	public void delete(@PathParam("id") long id) {
@@ -56,6 +65,9 @@ public class Todo {
 		repository.delete(item);
 	}
 	
+	/**
+	 * Update a single To-Do item
+	 */
 	@PUT
 	@Path("/{id}")
 	public Item update(@PathParam("id") long id, Item newItem) {
@@ -67,6 +79,12 @@ public class Todo {
 		return repository.save(item);
 	}
 	
+	/**
+	 * Get all To-Do items, supports optional URL query parameters.
+	 * @param page starting page
+	 * @param size items per page
+	 * @param done only items with this done-ness
+	 */
 	@GET
 	public List<Item> getMany(
 		@QueryParam("page") @DefaultValue("0") int page,
@@ -84,6 +102,10 @@ public class Todo {
 			.collect(Collectors.toList());
 	}
 	
+	/**
+	 * @return total items, useful for setting page/size.
+	 * TODO support done query
+	 */
 	@GET
 	@Path("/count")
 	public long getCount() {

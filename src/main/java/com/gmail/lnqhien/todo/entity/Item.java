@@ -5,6 +5,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * Represents and individual task item on someone's ToDo list.
+ * Based on TodoMVC features:
+ *  1. enter item text
+ *  2. mark item as done
+ *  3. delete item
+ */
 @Entity
 public class Item {
 
