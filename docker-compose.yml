@@ -10,8 +10,6 @@ services:
             MYSQL_DATABASE: tododb
             MYSQL_USER: todo
             MYSQL_PASSWORD: odot
-        ports:
-            - "3306:3306"
 
     todo:
         image: com.gmail.lnqhien/todo
