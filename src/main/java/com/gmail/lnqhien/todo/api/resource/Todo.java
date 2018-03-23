@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gmail.lnqhien.todo.ItemRepository;
 import com.gmail.lnqhien.todo.entity.Item;
@@ -28,6 +29,7 @@ import com.gmail.lnqhien.todo.entity.Item;
 @Path("/todo")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Transactional
 public class Todo {
 	
 	@Autowired
