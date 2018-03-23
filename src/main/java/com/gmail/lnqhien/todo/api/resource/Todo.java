@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,10 +70,16 @@ public class Todo {
 	@GET
 	public List<Item> getMany(
 		@QueryParam("page") @DefaultValue("0") int page,
-		@QueryParam("size") @DefaultValue("5") int size
+		@QueryParam("size") @DefaultValue("5") int size,
+		@QueryParam("done") Boolean done
 	) {
 		size = Math.min(size, 10); // restrict max in case lots of data
-		Iterable<Item> items = repository.findAll(PageRequest.of(page, size));
+		Pageable p = PageRequest.of(page, size);
+		
+		Iterable<Item> items = (done == null)
+			? repository.findAll(p)
+			: repository.findByDone(done, p);
+		
 		return StreamSupport.stream(items.spliterator(), false)
 			.collect(Collectors.toList());
 	}
